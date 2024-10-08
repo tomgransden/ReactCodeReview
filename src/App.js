@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useRef, useState } from "react";
+
+const EMPTY_ARRAY = [];
 
 function App() {
+  const [todos, set] = useState(EMPTY_ARRAY);
+  const inputRef = useRef();
+
+  const add = (t) => {
+    console.log("added a todo");
+    set((prev) => [...prev, { t, id: crypto.randomUUID() }]);
+    inputRef.current.value = "";
+  };
+
+  const remove = (t) => {
+    const a = todos.filter((td) => td.id !== t);
+    set(a);
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    add(inputRef.current.value);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form onSubmit={submit}>
+        <h1>Todo list</h1>
+        <input ref={inputRef} placeholder="Enter a todo" />
+        <input type="submit" />
+
+        <h2>Todos</h2>
+        {todos.map((item, index) => (
+          <p onClick={() => remove(item.id)}>{item.t}</p>
+        ))}
+      </form>
     </div>
   );
 }
